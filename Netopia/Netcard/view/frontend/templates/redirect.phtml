@@ -1,0 +1,36 @@
+<?php
+    /* @var Netopia\Netcard\Block\Redirect $block */
+    $quote = $block->getQuote();
+    $formData = $block->getFormData();
+    $paymentUrl = ($block->getConfigData('mode/is_live')) ? 'https://secure.mobilpay.ro' : 'https://sandboxsecure.mobilpay.ro';
+
+    echo "<pre>";
+    var_dump($formData);
+    echo "</pre>";
+    echo "<hr>";
+    if($formData['status']) {
+       ?>
+        <div class="">
+            <img src="<?php echo $this->getViewFileUrl('Netopia_Netcard::NETOPIA_Payments.svg');?>" width="134" alt="NETOPIA Payments>"/>
+            <h1 class="">
+                <span class="" >You will redirect to Netopia Website</span>
+            </h1>
+        </div>
+        <form method="post" id="mobilpay-form" action="<?php echo $paymentUrl ?>">
+            <input type="hidden" name="data" value="<?php echo $formData['data'] ?>"/>
+            <input type="hidden" name="env_key" id="env_key" value="<?php echo $formData['form_key'] ?>"/>
+            <!-- <button type="submit" class="button">SEND (Temporary - Test MODE)</button> -->
+        </form>
+
+        <script>
+            document.getElementById('mobilpay-form').submit();
+        </script>
+        <?php
+    }else {
+        echo '<div class="alert alert-danger" role="alert">
+                A aparut o eroare, nu se poate face redirect catre pagina de plata!.
+              </div>';
+        echo '<div>'.$formData['message'].'</div>';
+    }
+
+?>
